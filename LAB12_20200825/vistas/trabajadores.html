@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <title>Bicicentro Gtics</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+    </head>
+
+    <body>
+
+        <main>
+            <div class="container px-4 py-5">
+                <h1 class="pb-2 border-bottom">Bicicentro Gtics</h1>
+                <!-- Agrega el botón de regreso -->
+                <button type="button" class="btn btn-secondary mb-3" onclick="window.location.href='menu.html'">Regresar</button>
+
+                <h1 class="pb-2 border-bottom">Lista de trabajadores</h1>
+                <table id="tablaData" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Ver detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableLiga">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $.ajax({
+                    url: "http://localhost:3000/trabajadores",
+                    method: "GET",
+                    dataType: "json",
+                })
+                    .done(function (info) {
+                        console.log(info);
+                        var x = "";
+                        let h = 0;
+                        $.each(info, function (i, iteracion) {
+
+                                x += "<tr>";
+                                x += "<td>" + (h + 1) + "</td>";
+                                x += "<td>" + iteracion.trabajadores.nombres + "</td>";
+                                x += "<td>" + iteracion.trabajadores.apellido  + "</td>";
+                                x += "<td><a href='detalleTrabajadore.html" + (iteracion.trabajadores.id) + "' class='btn btn-warning'>Más detalles</a></td>";
+                                x += "</tr>";
+                                h = h + 1;
+
+                        });
+                        $("#tableLiga").html(x);
+                    })
+                    .fail(function (err) {
+                        console.log(err);
+                    });
+            });
+        </script>
+    </body>
+</html>

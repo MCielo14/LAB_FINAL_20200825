@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <title>Bicicentro Gtics</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    </head>
+
+    <body>
+        <main>
+            <div class="container px-4 py-5">
+                <h1 class="pb-2 border-bottom">Bicicentro Gtics</h1>
+                <!-- Agrega el botón de regreso -->
+                <button type="button" class="btn btn-secondary mb-3" onclick="window.location.href='sedes.html'">Regresar a la lista de sedes</button>
+
+                <!-- Detalles del trabajador -->
+                <div id="detallesTrabajador" class="mt-5">
+                    <h2>Detalles de Sede</h2>
+                    <div id="detallesContenido"></div>
+                </div>
+
+                <!-- Tabla de ventas -->
+                <h2 class="mt-5">Ventas</h2>
+                <table id="ventas" class="table mt-3">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre del productor</th>
+                            <th>DNI</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ventasBody">
+                        <!-- Filas de ventas se agregarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $.ajax({
+                    url: "http://localhost:3000/trabajadores",
+                    method: "GET",
+                    dataType: "json",
+                })
+                    .done(function (info) {
+                        console.log(info);
+                        var x = "";
+                        let h = 0;
+                        $.each(info, function (i, iteracion) {
+                            x += "<tr>";
+                            x += "<td>" + (h + 1) + "</td>";
+                            x += "<td>" + iteracion.trabajadores.nombres + "</td>";
+                            x += "<td>" + iteracion.trabajadores.apellido + "</td>";
+                            x += "<td><button type='button' class='btn btn-warning' onclick='mostrarDetalles(" + iteracion.trabajadores.id + ")'>Más detalles</button></td>";
+                            x += "</tr>";
+                            h = h + 1;
+                        });
+                        $("#tableLiga").html(x);
+                    })
+                    .fail(function (err) {
+                        console.log(err);
+                    });
+
+                // Función para mostrar detalles del trabajador y ventas
+                function mostrarDetalles(id) {
+                    // Detalles del trabajador
+                    $.ajax({
+                        url: "http://localhost:3000/trabajadores/" + id,
+                        method: "GET",
+                        dataType: "json",
+                    })
+                        .done(function (detalles) {
+                            console.log(detalles);
+                            var detallesHTML = "<p>ID: " + detalles[0].trabajadores.id + "</p>";
+                            detallesHTML += "<p>Nombre: " + detalles[0].trabajadores.nombres + "</p>";
+                            detallesHTML += "<p>Apellido: " + detalles[0].trabajadores.apellido + "</p>";
+                            // Agrega más detalles según sea necesario
+
+                            // Mostrar detalles en el contenedor
+                            $("#detallesContenido").html(detallesHTML);
+
+                            // Hacer visible el contenedor de detalles
+                            $("#detallesTrabajador").show();
+                        })
+                        .fail(function (err) {
+                            console.log(err);
+                        });
+
+                    // Ventas del trabajador
+                    $.ajax({
+                        url: "http://localhost:3000/trabajadores/ventas/" + id,
+                        method: "GET",
+                        dataType: "json",
+                    })
+                        .done(function (ventas) {
+                            console.log(ventas);
+                            var ventasHTML = "";
+                            $.each(ventas, function (i, venta) {
+                                ventasHTML += "<tr>";
+                                ventasHTML += "<td>" + (i + 1) + "</td>";
+                                ventasHTML += "<td>" + venta.nombreProductor + "</td>";
+                                ventasHTML += "<td>" + venta.numeroSerie + "</td>";
+                                ventasHTML += "<td>" + venta.marca + "</td>";
+                                ventasHTML += "<td>" + venta.fecha + "</td>";
+                                ventasHTML += "</tr>";
+                            });
+                            $("#ventasBody").html(ventasHTML);
+                        })
+                        .fail(function (err) {
+                            console.log

@@ -3,6 +3,10 @@ const mysql = require('mysql2');
 
 const app = express();
 const path = require('path')
+
+var cors = require('cors')
+app.use(cors())
+
 app.listen(3000,function (){
     console.log("corriendo en el puerto 3000")
 })
